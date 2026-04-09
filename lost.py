@@ -139,6 +139,7 @@ def LostAndFound():
     time.sleep(0.3)
     pyautogui.click(x=250, y=100)
     pyautogui.click(x=250, y=170)
+    pyautogui.moveTo(x=960, y=440)
 
 
     # 显示选择窗口并获取选中的值
@@ -160,6 +161,10 @@ def LostAndFound():
         # 这里添加身份证的处理代码
         pyautogui.hotkey('ctrl', 'shift', 'j')
         time.sleep(0.4)
+        pyautogui.click(x=1800, y=1000)
+        time.sleep(0.4)
+        pyautogui.hotkey('enter')
+        time.sleep(0.4)
         pyperclip.copy("""javascript:(function(){const e=document.querySelector('iframe[src*="PickUpDetail"]');const t=()=>{const o=e.contentDocument||e.contentWindow.document;(c=o.getElementById("Content_pickupcategory_5"))&&(c.checked=!0,c.dispatchEvent(new Event("change",{bubbles:!0}))),(a=o.getElementById("Content_pickupitem"))&&(a.value="身份证一张，姓名：XXX，身份号码：XXX",a.dispatchEvent(new Event("input",{bubbles:!0})))};e.onload=t,e.contentDocument?.readyState==="complete"&&t()})()""")
         pyautogui.hotkey('ctrl', 'v')
         pyautogui.hotkey('enter')
@@ -169,6 +174,10 @@ def LostAndFound():
         print("处理普通羊城通相关操作")
         # 这里添加身份证的处理代码
         pyautogui.hotkey('ctrl', 'shift', 'j')
+        time.sleep(0.4)
+        pyautogui.click(x=1800, y=1000)
+        time.sleep(0.4)
+        pyautogui.hotkey('enter')
         time.sleep(0.4)
         pyperclip.copy(
             """javascript:(function(){const e=document.querySelector('iframe[src*="PickUpDetail"]');const t=()=>{const o=e.contentDocument||e.contentWindow.document;(c=o.getElementById("Content_pickupcategory_4"))&&(c.checked=!0,c.dispatchEvent(new Event("change",{bubbles:!0}))),(a=o.getElementById("Content_pickupitem"))&&(a.value="普通羊城通一张，ID：XXX，余额：XXX",a.dispatchEvent(new Event("input",{bubbles:!0})))};e.onload=t,e.contentDocument?.readyState==="complete"&&t()})()""")
@@ -181,6 +190,10 @@ def LostAndFound():
         # 这里添加学生羊城通的处理代码
         pyautogui.hotkey('ctrl', 'shift', 'j')
         time.sleep(0.4)
+        pyautogui.click(x=1800, y=1000)
+        time.sleep(0.4)
+        pyautogui.hotkey('enter')
+        time.sleep(0.4)
         pyperclip.copy(
             """javascript:(function(){const e=document.querySelector('iframe[src*="PickUpDetail"]');const t=()=>{const o=e.contentDocument||e.contentWindow.document;(c=o.getElementById("Content_pickupcategory_4"))&&(c.checked=!0,c.dispatchEvent(new Event("change",{bubbles:!0}))),(a=o.getElementById("Content_pickupitem"))&&(a.value="学生羊城通一张，姓名：XXX，ID：XXX，余额：XXX",a.dispatchEvent(new Event("input",{bubbles:!0})))};e.onload=t,e.contentDocument?.readyState==="complete"&&t()})()""")
         pyautogui.hotkey('ctrl', 'v')
@@ -191,6 +204,10 @@ def LostAndFound():
         print("处理老年人优待卡相关操作")
         # 这里添加老年人优待卡的处理代码
         pyautogui.hotkey('ctrl', 'shift', 'j')
+        time.sleep(0.4)
+        pyautogui.click(x=1800, y=1000)
+        time.sleep(0.4)
+        pyautogui.hotkey('enter')
         time.sleep(0.4)
         pyperclip.copy(
             """javascript:(function(){const e=document.querySelector('iframe[src*="PickUpDetail"]');const t=()=>{const o=e.contentDocument||e.contentWindow.document;(c=o.getElementById("Content_pickupcategory_4"))&&(c.checked=!0,c.dispatchEvent(new Event("change",{bubbles:!0}))),(a=o.getElementById("Content_pickupitem"))&&(a.value="老人优待卡一张，姓名：XXX，ID：XXX，余额：XXX",a.dispatchEvent(new Event("input",{bubbles:!0})))};e.onload=t,e.contentDocument?.readyState==="complete"&&t()})()""")
