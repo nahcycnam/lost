@@ -1,0 +1,40 @@
+name: Build with Nuitka
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        pip install nuitka
+        pip install -r requirements.txt
+
+    - name: Build
+      run: |
+        python -m nuitka `
+          --standalone `
+          --windows-console-mode=disable `
+          --windows-icon-from-ico=logo.ico `
+          --output-filename=失物登录 `
+          --jobs=2 `
+          --assume-yes-for-downloads `
+          --enable-plugin=pyqt6 `
+          lost.py
+
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: 失物登录
+        path: lost.dist/
