@@ -5,7 +5,7 @@ import time, sys
 import json
 import os
 from PyQt6.QtWidgets import (QApplication, QWidget, QVBoxLayout,
-							 QRadioButton, QButtonGroup, QLabel, QMessageBox)
+							 QRadioButton, QButtonGroup, QLabel)
 from PyQt6.QtCore import Qt, pyqtSignal, QEventLoop
 from PyQt6.QtGui import QFont
 
@@ -18,7 +18,7 @@ def load_config():
 			return json.load(f)
 	except FileNotFoundError:
 		print("未找到config.json文件，使用默认休眠时间1.6秒")
-		return {"sleep_time": 1.6}
+		return {}
 
 
 class RadioButtonWindow(QWidget):
@@ -115,6 +115,8 @@ def LostAndFound():
 	# 加载配置
 	config = load_config()
 	sleep_time = config.get("sleep_time", 1.6)
+	station = config.get("station", "taojinzhan")
+	password = config.get("password", "Money$100")
 
 	webbrowser.register('qaxbrowser', None, webbrowser.BackgroundBrowser(
 		r"C:\Program Files\Google\Chrome\Application\1.exe"))
@@ -139,11 +141,11 @@ def LostAndFound():
 	time.sleep(0.4)
 	pyautogui.click(x=1800, y=900)
 	time.sleep(0.4)
-	pyperclip.copy(
-		"""javascript:(function(){document.getElementById('username_text').value='taojinzhan';document.getElementById('password_text').value='Money$100';doSubmit()})();""")
+	pyperclip.copy("""javascript:(function(){document.getElementById('username_text').value='""" + station + """';document.getElementById('password_text').value='""" + password + """';doSubmit()})();""")
 	pyautogui.hotkey('ctrl', 'v')
 	pyautogui.hotkey('enter')
-	pyautogui.click(x=1900, y=130)
+
+	pyautogui.hotkey('ctrl', 'shift', 'j')
 
 	window_title = "失物招领 - Google Chrome"
 
@@ -159,7 +161,8 @@ def LostAndFound():
 
 	time.sleep(sleep_time)  # 使用配置文件中的休眠时间
 	pyautogui.click(x=1878, y=153)
-	time.sleep(0.4)
+	pyautogui.click(x=1878, y=118)
+	time.sleep(0.5)
 	pyautogui.hotkey('ctrl', 'shift', 'j')
 	time.sleep(0.4)
 	pyautogui.click(x=1800, y=900)
@@ -168,7 +171,7 @@ def LostAndFound():
 		"""javascript:(function(){function simulateRealUserInteraction(){console.log('🚀 开始模拟真实用户操作...');const iframe=document.querySelector('iframe[src*="PickUpDetail"]');if(!iframe){console.error('❌ 未找到iframe');return;}const iframeDoc=iframe.contentDocument||iframe.contentWindow.document;const iframeWin=iframe.contentWindow;iframeDoc.body.click();const operations=[{id:'Content_txtpickuptime',type:'input',value:()=>{const now=new Date();return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;}},{id:'Content_pickuppersontel',type:'input',value:'83157008'},{id:'Content_pickuppersoncategory_1',type:'radio',value:true}];operations.forEach(op=>{const el=iframeDoc.getElementById(op.id);if(el){setTimeout(()=>{if(op.type==='radio'){el.checked=op.value;el.click();el.dispatchEvent(new Event('change',{bubbles:true}));}else{el.focus();el.value=typeof op.value==='function'?op.value():op.value;el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));el.dispatchEvent(new Event('blur',{bubbles:true}));}console.log(`✅ 设置 ${op.id}`);},100);}});setTimeout(()=>{const lineSelect=iframeDoc.getElementById('Content_pickupline');if(lineSelect){lineSelect.focus();lineSelect.click();lineSelect.value='五号线';lineSelect.dispatchEvent(new Event('change',{bubbles:true}));console.log('✅ 已选择线路: 五号线');setTimeout(()=>{manualSetStationWithRetry(0);},800);}},300);}function manualSetStationWithRetry(currentRetry){const MAX_RETRY=5;const RETRY_INTERVAL=500;console.log(`🔄 开始手动设置车站...（第 ${currentRetry + 1} 次尝试，最大重试 ${MAX_RETRY} 次）`);const iframe=document.querySelector('iframe[src*="PickUpDetail"]');if(!iframe){if(currentRetry < MAX_RETRY){console.warn(`❌ 第 ${currentRetry + 1} 次尝试未找到iframe，将在 ${RETRY_INTERVAL}ms 后重试`);setTimeout(()=>manualSetStationWithRetry(currentRetry + 1),RETRY_INTERVAL);return;}else{console.error('❌ 达到最大重试次数，仍未找到iframe');return;}}const iframeDoc=iframe.contentDocument||iframe.contentWindow.document;const iframeWin=iframe.contentWindow;const stationSelect=iframeDoc.getElementById('Content_pickupstation');if(!stationSelect){if(currentRetry < MAX_RETRY){console.warn(`❌ 第 ${currentRetry + 1} 次尝试未找到车站选择框，将在 ${RETRY_INTERVAL}ms 后重试`);setTimeout(()=>manualSetStationWithRetry(currentRetry + 1),RETRY_INTERVAL);return;}else{console.error('❌ 达到最大重试次数，仍未找到车站选择框');return;}}console.log('📋 所有车站选项:');for(let i=0;i<stationSelect.options.length;i++){console.log(`  ${i}: ${stationSelect.options[i].text} (${stationSelect.options[i].value})`);}let foundStation=false;for(let i=0;i<stationSelect.options.length;i++){const option=stationSelect.options[i];if(option.text.includes('淘金')||option.value.includes('淘金')){console.log(`🔍 找到淘金站: 索引 ${i} - ${option.text}`);stationSelect.selectedIndex=i;stationSelect.dispatchEvent(new Event('change',{bubbles:true}));stationSelect.dispatchEvent(new Event('input',{bubbles:true}));if(typeof iframeWin.onStationChange==='function'){iframeWin.onStationChange({target:stationSelect});}if(typeof iframeWin.jQuery!=='undefined'){iframeWin.jQuery(stationSelect).trigger('change');}console.log(`✅ 第 ${currentRetry + 1} 次尝试成功：手动设置选择索引 ${i}: ${option.text}`);foundStation=true;break;}}if(!foundStation){if(currentRetry < MAX_RETRY){console.warn(`⚠️ 第 ${currentRetry + 1} 次尝试未找到包含"淘金"的车站，将在 ${RETRY_INTERVAL}ms 后重试`);setTimeout(()=>manualSetStationWithRetry(currentRetry + 1),RETRY_INTERVAL);return;}else{console.log('⚠%EF%B8%8F 达到最大重试次数，仍未找到包含"淘金"的车站，将选择第一个可用选项');if(stationSelect.options.length>0){stationSelect.selectedIndex=0;stationSelect.dispatchEvent(new Event('change',{bubbles:true}));console.log(`✅ 设置为第一个选项: ${stationSelect.options[0].text}`);}}}setTimeout(()=>{console.log('\\n✅ 最终验证结果:');const selectedOption=stationSelect.options[stationSelect.selectedIndex];if(selectedOption){console.log(`  当前选择的车站: ${selectedOption.text}`);}else{console.log('  未选择任何车站');}},500);}simulateRealUserInteraction();})();""")
 	pyautogui.hotkey('ctrl', 'v')
 	pyautogui.hotkey('enter')
-	pyautogui.click(x=1900, y=130)
+	pyautogui.hotkey('ctrl', 'shift', 'j')
 	pyautogui.moveTo(x=960, y=440)
 
 	# 显示选择窗口并获取选中的值
@@ -199,7 +202,7 @@ def LostAndFound():
 		pyautogui.hotkey('ctrl', 'v')
 		pyautogui.hotkey('enter')
 		time.sleep(0.3)
-		pyautogui.click(x=1900, y=134)  # 点击 控制台 X
+		pyautogui.hotkey('ctrl', 'shift', 'j')
 	elif selected_card == "普通羊城通":
 		print("处理普通羊城通相关操作")
 		# 这里添加身份证的处理代码
@@ -214,7 +217,7 @@ def LostAndFound():
 		pyautogui.hotkey('ctrl', 'v')
 		pyautogui.hotkey('enter')
 		time.sleep(0.3)
-		pyautogui.click(x=1900, y=134)  # 点击 控制台 X
+		pyautogui.hotkey('ctrl', 'shift', 'j')
 	elif selected_card == "学生羊城通":
 		print("处理学生羊城通相关操作")
 		# 这里添加学生羊城通的处理代码
@@ -229,7 +232,7 @@ def LostAndFound():
 		pyautogui.hotkey('ctrl', 'v')
 		pyautogui.hotkey('enter')
 		time.sleep(0.3)
-		pyautogui.click(x=1900, y=134)  # 点击 控制台 X
+		pyautogui.hotkey('ctrl', 'shift', 'j')
 	elif selected_card == "老年人优待卡":
 		print("处理老年人优待卡相关操作")
 		# 这里添加老年人优待卡的处理代码
@@ -244,7 +247,7 @@ def LostAndFound():
 		pyautogui.hotkey('ctrl', 'v')
 		pyautogui.hotkey('enter')
 		time.sleep(0.3)
-		pyautogui.click(x=1900, y=134)  # 点击 控制台 X
+		pyautogui.hotkey('ctrl', 'shift', 'j')
 	elif selected_card == "其他":
 		print("处理其他失物相关操作")
 	# 这里添加其他失物的处理代码
